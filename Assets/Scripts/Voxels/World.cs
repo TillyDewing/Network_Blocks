@@ -5,10 +5,21 @@ using UnityEngine;
 public class World : MonoBehaviour
 {
     public string worldName = "World";
+    public static int seed = 0;
+    public static World world;
     //List of all loaded chunks
     public Dictionary<WorldPos, Chunk> chunks = new Dictionary<WorldPos, Chunk>();
 
     public GameObject chunkPrefab;
+    public LoadChunks player;
+    
+    private void Awake()
+    {
+        //seed = Random.Range(0, 10000);
+        LoadWorld(worldName);
+        NetworkWorldManager.world = this;
+        world = this;
+    }
 
     //Creates a new chunk at given position
     public void CreateChunk(int x, int y, int z)
@@ -98,6 +109,32 @@ public class World : MonoBehaviour
             {
                 chunk.update = true;
             }
+        }
+    }
+
+    public void SaveAndQuit()
+    {
+        player.loadChunks = false;
+        foreach (KeyValuePair<WorldPos,Chunk> entry in chunks)
+        {
+            DestroyChunk(entry.Value.pos.x, entry.Value.pos.y, entry.Value.pos.z);
+        }
+    }
+
+    public void LoadWorld(string worldName)
+    {
+        WorldConfig config = WorldConfig.LoadConfig(worldName);
+        if (config == null)
+        {
+            config = new WorldConfig();
+            config.worldName = "World";
+            config.seed = Random.Range(0, 10000);
+            config.SaveConfig();
+        }
+        else
+        {
+            seed = config.seed;
+            worldName = config.worldName;
         }
     }
 }

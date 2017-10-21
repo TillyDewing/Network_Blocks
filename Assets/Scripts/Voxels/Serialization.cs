@@ -64,4 +64,26 @@ public static class Serialization
         stream.Close();
         return true;
     }
+
+    public static string SaveToString(Chunk chunk)
+    {
+        Save save = new Save(chunk);
+
+        string saveFile = SaveLocation(chunk.world.worldName);
+        saveFile += FileName(chunk.pos);
+
+        IFormatter formatter = new BinaryFormatter();
+        MemoryStream stream = new MemoryStream();
+        formatter.Serialize(stream, save);
+        return Convert.ToBase64String(stream.ToArray());
+        
+    }
+
+    public static Chunk LoadFromString(string data)
+    {
+        byte[] bytes = Convert.FromBase64String(data);
+
+        MemoryStream stream = new MemoryStream(bytes);
+        return (Chunk)new BinaryFormatter().Deserialize(stream);
+    }
 }

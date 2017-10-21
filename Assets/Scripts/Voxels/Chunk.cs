@@ -56,6 +56,7 @@ public class Chunk : MonoBehaviour
         if (InRange(x) && InRange(y) && InRange(z))
         {
             blocks[x, y, z] = block;
+            blocks[x, y, z].changed = true;
         }
         else
         {

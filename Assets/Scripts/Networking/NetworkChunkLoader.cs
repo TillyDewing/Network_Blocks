@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 
-public class LoadChunks : MonoBehaviour
+public class NetworkChunkLoader : NetworkBehaviour
 {
     static WorldPos[] chunkPositions = {   new WorldPos( 0, 0,  0), new WorldPos(-1, 0,  0), new WorldPos( 0, 0, -1), new WorldPos( 0, 0,  1), new WorldPos( 1, 0,  0),
                              new WorldPos(-1, 0, -1), new WorldPos(-1, 0,  1), new WorldPos( 1, 0, -1), new WorldPos( 1, 0,  1), new WorldPos(-2, 0,  0),
@@ -60,6 +61,11 @@ public class LoadChunks : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!isClient)
+        {
+            return;
+        }
+
         if (!loadChunks)
         {
             return;
@@ -148,7 +154,9 @@ public class LoadChunks : MonoBehaviour
     void BuildChunk(WorldPos pos)
     {
         if (world.GetChunk(pos.x, pos.y, pos.z) == null)
+        {
             world.CreateChunk(pos.x, pos.y, pos.z);
+        }
     }
 
     bool DeleteChunks()

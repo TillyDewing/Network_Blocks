@@ -82,7 +82,7 @@ public class TerrainGen
 
     public static int GetNoise(int x, int y, int z, float scale, int max)
     {
-        return Mathf.FloorToInt((Noise.Generate(x * scale, y * scale, z * scale) + 1f) * (max / 2f));
+        return Mathf.FloorToInt((Noise.Generate((x + World.seed) * scale, (y) * scale, (z+ World.seed) * scale) + 1f) * (max / 2f));
     }
 
     public static void SetBlock(int x, int y, int z, Block block, Chunk chunk, bool replaceBlocks = false)
