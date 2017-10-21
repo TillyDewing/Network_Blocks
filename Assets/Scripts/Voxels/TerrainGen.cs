@@ -1,16 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEngine;
+using System.Collections;
 using SimplexNoise;
-using UnityEngine;
 
 public class TerrainGen
 {
+
     float stoneBaseHeight = -24;
     float stoneBaseNoise = 0.05f;
     float stoneBaseNoiseHeight = 4;
+
     float stoneMountainHeight = 48;
     float stoneMountainFrequency = 0.008f;
     float stoneMinHeight = -12;
+
     float dirtBaseHeight = 1;
     float dirtNoise = 0.04f;
     float dirtNoiseHeight = 3;
@@ -26,15 +28,16 @@ public class TerrainGen
         }
         return chunk;
     }
+
     public Chunk ChunkColumnGen(Chunk chunk, int x, int z)
     {
         int stoneHeight = Mathf.FloorToInt(stoneBaseHeight);
         stoneHeight += GetNoise(x, 0, z, stoneMountainFrequency, Mathf.FloorToInt(stoneMountainHeight));
+
         if (stoneHeight < stoneMinHeight)
-        {
             stoneHeight = Mathf.FloorToInt(stoneMinHeight);
-        }
-        stoneHeight += GetNoise(x, 0, z, stoneBaseNoise, Mathf.FloorToInt(stoneBaseHeight));
+
+        stoneHeight += GetNoise(x, 0, z, stoneBaseNoise, Mathf.FloorToInt(stoneBaseNoiseHeight));
 
         int dirtHeight = stoneHeight + Mathf.FloorToInt(dirtBaseHeight);
         dirtHeight += GetNoise(x, 100, z, dirtNoise, Mathf.FloorToInt(dirtNoiseHeight));
@@ -53,7 +56,9 @@ public class TerrainGen
             {
                 chunk.SetBlock(x - chunk.pos.x, y - chunk.pos.y, z - chunk.pos.z, new BlockAir());
             }
+
         }
+
         return chunk;
     }
 
