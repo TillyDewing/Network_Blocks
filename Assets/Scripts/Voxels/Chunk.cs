@@ -7,15 +7,15 @@ using System.Collections;
 
 public class Chunk : MonoBehaviour
 {
-
+    public Block[,,] blocks = new Block[chunkSize, chunkSize, chunkSize];
     public static int chunkSize = 16;
-    public bool update = true;
+    public bool update = false;
+    public bool rendered;
     public World world;
     public WorldPos pos;
 
     MeshFilter filter;
     MeshCollider coll;
-    private Block[,,] blocks = new Block[chunkSize, chunkSize, chunkSize];
 
 
     // Use this for initialization
@@ -34,7 +34,7 @@ public class Chunk : MonoBehaviour
             UpdateChunk();
         }
     }
-
+    //Gets block at a given possition within the chunk
     public Block GetBlock(int x, int y, int z)
     {
         if (InRange(x) && InRange(y) && InRange(z))
@@ -50,7 +50,7 @@ public class Chunk : MonoBehaviour
             return false;
         return true;
     }
-
+    //Sets block at a given possition within the chunk
     public void SetBlock(int x, int y, int z, Block block)
     {
         if (InRange(x) && InRange(y) && InRange(z))
@@ -66,8 +66,9 @@ public class Chunk : MonoBehaviour
     // Updates the chunk based on its contents
     void UpdateChunk()
     {
-        MeshData meshData = new MeshData();
+        rendered = true;
 
+        MeshData meshData = new MeshData();
         for (int x = 0; x < chunkSize; x++)
         {
             for (int y = 0; y < chunkSize; y++)
@@ -82,8 +83,7 @@ public class Chunk : MonoBehaviour
         RenderMesh(meshData);
     }
 
-    // Sends the calculated mesh information
-    // to the mesh and collision components
+    // Sends the calculated mesh information to the mesh and collision components
     void RenderMesh(MeshData meshData)
     {
         filter.mesh.Clear();
@@ -102,4 +102,11 @@ public class Chunk : MonoBehaviour
         coll.sharedMesh = mesh;
     }
 
+    public void SetBlocksUnmodified()
+    {
+        foreach (Block block in blocks)
+        {
+            block.changed = false;
+        }
+    }
 }

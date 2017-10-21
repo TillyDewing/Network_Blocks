@@ -1,13 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using System;
+//Base block class will render as cobblestone can be inherited to create blocks with custom effects and render properties
+[Serializable]
 public class Block
 {
     public enum Direction { north, east, south, west, up, down };
 
     public struct Tile { public int x; public int y;}
     const float tileSize = 0.25f;
-
+    public bool changed = true;
     //Base block constructor
     public Block()
     {

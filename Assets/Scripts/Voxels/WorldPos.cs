@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+//Defines a point in world space (essestialy vector3 int)
+[Serializable]
 public struct WorldPos
 {
     public int x, y, z;

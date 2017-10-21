@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+//Data class used to render a chunk
 public class MeshData
 {
     public List<Vector3> vertices = new List<Vector3>();
@@ -15,6 +15,7 @@ public class MeshData
 
     public MeshData() { }
 
+    //Adds the nessasary triangles for a quad used to render 1x1 cubes
     public void AddQuadTriangles()
     {
         triangles.Add(vertices.Count - 4);
@@ -46,7 +47,7 @@ public class MeshData
         }
 
     }
-
+    //Used to render any blocks which aren't a 1x1 cube
     public void AddTriangle(int tri)
     {
         triangles.Add(tri);
