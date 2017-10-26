@@ -60,4 +60,9 @@ public static class EditTerrain
 
         return block;
     }
+
+    public static Chunk GetChunk(WorldPos pos)
+    {
+        return World.singleton.GetChunk(pos.x, pos.y, pos.z);
+    }
 }

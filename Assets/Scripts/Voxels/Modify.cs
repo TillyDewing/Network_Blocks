@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 //Test script for modifying terrain
-public class Modify : NetworkBehaviour
+public class Modify : MonoBehaviour
 {
 
     public NetworkWorldManager worldManager;
@@ -12,22 +12,18 @@ public class Modify : NetworkBehaviour
     private void Start()
     {
         worldManager = GameObject.FindGameObjectWithTag("World").GetComponent<NetworkWorldManager>();
-        if(!isLocalPlayer)
-        {
-            GetComponent<Camera>().enabled = false;
-            GetComponent<AudioListener>().enabled = false;
-        }
     }
 
     void Update()
     {
-        if (!isLocalPlayer)
-        {
-            return;
-        }
+
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
-            worldManager.CmdSetBlockHit(transform.position, transform.forward, 0, false);
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, transform.forward, out hit, 100))
+            {
+                EditTerrain.SetBlock(hit, new BlockAir());
+            }
         }
 
         rot = new Vector2(

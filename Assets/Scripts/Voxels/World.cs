@@ -12,9 +12,21 @@ public class World : MonoBehaviour
 
     public GameObject chunkPrefab;
     public LoadChunks player;
-    
+
+    public static World singleton;
+
     private void Awake()
     {
+        if (singleton == null)
+        {
+            singleton = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         //seed = Random.Range(0, 10000);
         LoadWorld(worldName);
         NetworkWorldManager.world = this;

@@ -65,25 +65,19 @@ public static class Serialization
         return true;
     }
 
-    public static string SaveToString(Chunk chunk)
+    public static Save LoadChunkData(WorldPos pos)
     {
-        Save save = new Save(chunk);
+        string saveFile = SaveLocation(World.singleton.worldName);
+        saveFile += FileName(pos);
 
-        string saveFile = SaveLocation(chunk.world.worldName);
-        saveFile += FileName(chunk.pos);
+        if (!File.Exists(saveFile))
+            return null;
 
         IFormatter formatter = new BinaryFormatter();
-        MemoryStream stream = new MemoryStream();
-        formatter.Serialize(stream, save);
-        return Convert.ToBase64String(stream.ToArray());
-        
-    }
+        FileStream stream = new FileStream(saveFile, FileMode.Open);
 
-    public static Chunk LoadFromString(string data)
-    {
-        byte[] bytes = Convert.FromBase64String(data);
-
-        MemoryStream stream = new MemoryStream(bytes);
-        return (Chunk)new BinaryFormatter().Deserialize(stream);
+        Save save = (Save)formatter.Deserialize(stream);
+        stream.Close();
+        return save;
     }
 }
