@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
+[Serializable]
 public class BlockDirt : Block
 {
     public BlockDirt() : base()

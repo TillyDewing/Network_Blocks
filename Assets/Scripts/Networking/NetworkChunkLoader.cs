@@ -3,7 +3,7 @@ using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 
-public class NetworkChunkLoader : NetworkBehaviour
+public class NetworkChunkLoader : MonoBehaviour
 {
     static WorldPos[] chunkPositions = {   new WorldPos( 0, 0,  0), new WorldPos(-1, 0,  0), new WorldPos( 0, 0, -1), new WorldPos( 0, 0,  1), new WorldPos( 1, 0,  0),
                              new WorldPos(-1, 0, -1), new WorldPos(-1, 0,  1), new WorldPos( 1, 0, -1), new WorldPos( 1, 0,  1), new WorldPos(-2, 0,  0),
@@ -46,25 +46,35 @@ public class NetworkChunkLoader : NetworkBehaviour
                              new WorldPos( 5, 0,  6), new WorldPos( 6, 0, -5), new WorldPos( 6, 0,  5) };
 
     public World world;
-    public bool loadChunks = true;
+    public bool loadChunks = false;
 
     List<WorldPos> updateList = new List<WorldPos>();
     List<WorldPos> buildList = new List<WorldPos>();
 
     int timer = 0;
 
+    public static NetworkChunkLoader singleton;
+
     private void Awake()
     {
-        world = GameObject.FindGameObjectWithTag("World").GetComponent<World>();
+        if (singleton == null)
+        {
+            singleton = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!isClient)
-        {
-            return;
-        }
+        //if (!isClient)
+        //{
+        //    return;
+        //}
 
         if (!loadChunks)
         {
@@ -99,7 +109,7 @@ public class NetworkChunkLoader : NetworkBehaviour
                     );
 
                 //Get the chunk in the defined position
-                Chunk newChunk = world.GetChunk(
+                Chunk newChunk = World.singleton.GetChunk(
                     newChunkPos.x, newChunkPos.y, newChunkPos.z);
 
                 //If the chunk already exists and it's already
@@ -155,6 +165,7 @@ public class NetworkChunkLoader : NetworkBehaviour
     {
         if (world.GetChunk(pos.x, pos.y, pos.z) == null)
         {
+            //Need to replace this with one that comunicates with server
             world.CreateChunk(pos.x, pos.y, pos.z);
         }
     }

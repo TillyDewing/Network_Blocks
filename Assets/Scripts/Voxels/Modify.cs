@@ -22,7 +22,14 @@ public class Modify : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(transform.position, transform.forward, out hit, 100))
             {
-                EditTerrain.SetBlock(hit, new BlockAir());
+                if (World.singleton.isClient)
+                {
+                    NetworkBlocksClient.SetBlock(hit, new BlockAir());
+                }
+                else
+                {
+                    EditTerrain.SetBlock(hit, new BlockAir());
+                }
             }
         }
 

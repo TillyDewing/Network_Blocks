@@ -12,19 +12,17 @@ public class MessaageTypes
     }
 
     //----------- Client to Server ---------------
-    public const short RequestChunkData = 150;
-    public const short SetBlock = 151;
+    public const short RequestChunkDataID = 150;
+    public const short SetBlockID = 151;
     //----------- Server to Client ---------------
-    public const short ChunkData = 160;
-    public const short WorldPrefs = 151;
+    public const short ChunkDataID = 160;
+    public const short WorldPrefsID = 161;
 
     //----------- Client to Server Messages ---------------
 
     public class RequestChunkDataMessage : MessageBase
     {
-        public byte x;
-        public byte y;
-        public byte z;
+        public WorldPos pos;
     }
 
     public class SetBlockMessage : MessageBase
@@ -40,6 +38,14 @@ public class MessaageTypes
         public byte y;
         public byte z;
         public byte blockID;
+
+        public MsgBlock(byte x, byte y, byte z, byte blockID)
+        {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.blockID = blockID;
+        }
     }
     public class ChunkDataMessage : MessageBase
     {

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
@@ -8,6 +9,7 @@ using System.Collections;
 public class Chunk : MonoBehaviour
 {
     public Block[,,] blocks = new Block[chunkSize, chunkSize, chunkSize];
+    public Dictionary<WorldPos, Block> modifiedBlocks = new Dictionary<WorldPos, Block>();
     public static int chunkSize = 16;
     public bool update = false;
     public bool rendered;
@@ -51,12 +53,24 @@ public class Chunk : MonoBehaviour
         return true;
     }
     //Sets block at a given possition within the chunk
-    public void SetBlock(int x, int y, int z, Block block)
+    public void SetBlock(int x, int y, int z, Block block, bool natural = false)
     {
         if (InRange(x) && InRange(y) && InRange(z))
         {
             blocks[x, y, z] = block;
             blocks[x, y, z].changed = true;
+            //Keeps modified blocks in a seperate list so they can be sent to the client
+            if (!natural)
+            {
+                if (modifiedBlocks.ContainsKey(new WorldPos(x, y, z)))
+                {
+                    modifiedBlocks[new WorldPos(x, y, z)] = block;
+                }
+                else
+                {
+                    modifiedBlocks.Add(new WorldPos(x, y, z), block);
+                }
+            }
         }
         else
         {
@@ -109,5 +123,7 @@ public class Chunk : MonoBehaviour
         {
             block.changed = false;
         }
+
+        modifiedBlocks = new Dictionary<WorldPos, Block>();
     }
 }

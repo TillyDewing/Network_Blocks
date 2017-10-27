@@ -6,7 +6,6 @@ public class World : MonoBehaviour
 {
     public string worldName = "World";
     public static int seed = 0;
-    public static World world;
     //List of all loaded chunks
     public Dictionary<WorldPos, Chunk> chunks = new Dictionary<WorldPos, Chunk>();
 
@@ -14,6 +13,7 @@ public class World : MonoBehaviour
     public LoadChunks player;
 
     public static World singleton;
+    public bool isClient = false;
 
     private void Awake()
     {
@@ -29,12 +29,10 @@ public class World : MonoBehaviour
 
         //seed = Random.Range(0, 10000);
         LoadWorld(worldName);
-        NetworkWorldManager.world = this;
-        world = this;
     }
 
     //Creates a new chunk at given position
-    public void CreateChunk(int x, int y, int z)
+    public Chunk CreateChunk(int x, int y, int z)
     {
         WorldPos worldPos = new WorldPos(x, y, z);
 
@@ -51,8 +49,20 @@ public class World : MonoBehaviour
         newChunk = terrainGen.ChunkGen(newChunk);
 
         //Sets the generated blocks to unmodified and tries to load any modified blocks from the save file
-        newChunk.SetBlocksUnmodified();
-        Serialization.Load(newChunk);
+        if (isClient)
+        {
+            NetworkBlocksClient.RequestChuckData(newChunk.pos);
+        }
+        else
+        {
+            newChunk.SetBlocksUnmodified();
+            Serialization.Load(newChunk);
+        }
+
+        //newChunk.SetBlocksUnmodified();
+        //Serialization.Load(newChunk);
+
+        return newChunk;
     }
     
     public void DestroyChunk(int x, int y, int z) //Unloads chunk
@@ -60,7 +70,10 @@ public class World : MonoBehaviour
         Chunk chunk = null;
         if (chunks.TryGetValue(new WorldPos(x, y, z), out chunk))
         {
-            Serialization.SaveChunk(chunk); //Saves chunk to file before unloading
+            if (!isClient)
+            {
+                Serialization.SaveChunk(chunk); //Saves chunk to file before unloading
+            }
             Object.Destroy(chunk.gameObject);
             chunks.Remove(new WorldPos(x, y, z));
         }
@@ -138,6 +151,7 @@ public class World : MonoBehaviour
         WorldConfig config = WorldConfig.LoadConfig(worldName);
         if (config == null)
         {
+            Debug.Log("settings.bin for world: " + worldName + " does not exist. Creating one.");
             config = new WorldConfig();
             config.worldName = "World";
             config.seed = Random.Range(0, 10000);
@@ -145,6 +159,7 @@ public class World : MonoBehaviour
         }
         else
         {
+            Debug.Log("Loaded settings for world: " + worldName);
             seed = config.seed;
             worldName = config.worldName;
         }

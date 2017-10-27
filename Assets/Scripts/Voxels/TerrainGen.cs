@@ -93,7 +93,7 @@ public class TerrainGen
         if (Chunk.InRange(x) && Chunk.InRange(y) && Chunk.InRange(z))
         {
             if (replaceBlocks || chunk.blocks[x, y, z] == null)
-                chunk.SetBlock(x, y, z, block);
+                chunk.SetBlock(x, y, z, block, true);
         }
     }
 
