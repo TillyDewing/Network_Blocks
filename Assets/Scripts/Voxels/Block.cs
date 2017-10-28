@@ -8,7 +8,7 @@ public class Block
     public enum Direction { north, east, south, west, up, down };
 
     public struct Tile { public int x; public int y;}
-    const float tileSize = 0.25f;
+    const float tileSize = 0.125f;
     public bool changed = true;
     //Base block constructor
     public Block()
@@ -54,6 +54,18 @@ public class Block
 
         return meshData;
 
+    }
+
+    public virtual MeshData BlockData(MeshData meshData)
+    {
+        meshData = FaceDataUp(null, 0, 0, 0, meshData);
+        meshData = FaceDataDown(null, 0, 0, 0, meshData);
+        meshData = FaceDataNorth(null, 0, 0, 0, meshData);
+        meshData = FaceDataSouth(null, 0, 0, 0, meshData);
+        meshData = FaceDataEast(null, 0, 0, 0, meshData);
+        meshData = FaceDataWest(null, 0, 0, 0, meshData);
+
+        return meshData;
     }
 
     protected virtual MeshData FaceDataUp
@@ -148,14 +160,10 @@ public class Block
         Vector2[] UVs = new Vector2[4];
         Tile tilePos = TexturePosition(direction);
 
-        UVs[0] = new Vector2(tileSize * tilePos.x + tileSize,
-            tileSize * tilePos.y);
-        UVs[1] = new Vector2(tileSize * tilePos.x + tileSize,
-            tileSize * tilePos.y + tileSize);
-        UVs[2] = new Vector2(tileSize * tilePos.x,
-            tileSize * tilePos.y + tileSize);
-        UVs[3] = new Vector2(tileSize * tilePos.x,
-            tileSize * tilePos.y);
+        UVs[0] = new Vector2(tileSize * tilePos.x + tileSize, tileSize * tilePos.y);
+        UVs[1] = new Vector2(tileSize * tilePos.x + tileSize, tileSize * tilePos.y + tileSize);
+        UVs[2] = new Vector2(tileSize * tilePos.x, tileSize * tilePos.y + tileSize);
+        UVs[3] = new Vector2(tileSize * tilePos.x,tileSize * tilePos.y);
 
         return UVs;
     }

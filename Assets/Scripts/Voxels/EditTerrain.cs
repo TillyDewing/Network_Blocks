@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿//William Dewing 2017
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 //Helper class of globaly accesible functions for voxel terrain
@@ -60,4 +61,10 @@ public static class EditTerrain
 
         return block;
     }
+
+    public static Chunk GetChunk(WorldPos pos)
+    {
+        return World.singleton.GetChunk(pos.x, pos.y, pos.z);
+    }
+
 }

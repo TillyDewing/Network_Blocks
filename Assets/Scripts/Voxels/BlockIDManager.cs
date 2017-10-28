@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿//William Dewing 2017
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,5 +24,34 @@ public static class BlockIDManager
         }
 
         return new Block();
+    }
+    public static byte GetID(Block block)
+    {
+        if (block.GetType() == typeof(BlockAir))
+        {
+            return 0;
+        }
+        if (block.GetType() == typeof(Block))
+        {
+            return 1;
+        }
+        if (block.GetType() == typeof(BlockGrass))
+        {
+            return 2;
+        }
+        if (block.GetType() == typeof(BlockDirt))
+        {
+            return 3;
+        }
+        if (block.GetType() == typeof(BlockWood))
+        {
+            return 4;
+        }
+        if (block.GetType() == typeof(BlockLeaves))
+        {
+            return 5;
+        }
+
+        return 0;
     }
 }

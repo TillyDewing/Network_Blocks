@@ -1,33 +1,34 @@
-﻿using System.Collections;
+﻿//William Dewing 2017
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 //Test script for modifying terrain
-public class Modify : NetworkBehaviour
+public class Modify : MonoBehaviour
 {
-
-    public NetworkWorldManager worldManager;
     Vector2 rot;
 
     private void Start()
     {
-        worldManager = GameObject.FindGameObjectWithTag("World").GetComponent<NetworkWorldManager>();
-        if(!isLocalPlayer)
-        {
-            GetComponent<Camera>().enabled = false;
-            GetComponent<AudioListener>().enabled = false;
-        }
     }
 
     void Update()
     {
-        if (!isLocalPlayer)
-        {
-            return;
-        }
+
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
-            worldManager.CmdSetBlockHit(transform.position, transform.forward, 0, false);
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, transform.forward, out hit, 100))
+            {
+                if (World.singleton.isClient)
+                {
+                    NetworkBlocksClient.SetBlock(hit, new BlockAir());
+                }
+                else
+                {
+                    EditTerrain.SetBlock(hit, new BlockAir());
+                }
+            }
         }
 
         rot = new Vector2(
