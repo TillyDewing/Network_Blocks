@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿//William Dewing 2017
+using UnityEngine;
 using UnityEngine.Networking;
 
 public class MessaageTypes
@@ -14,10 +15,12 @@ public class MessaageTypes
     //----------- Client to Server ---------------
     public const short RequestChunkDataID = 150;
     public const short SetBlockID = 151;
+    public const short UnloadChunkID = 152;
+    public const short ChatMessageID = 153;
+    public const short ClientInfoID = 154;
     //----------- Server to Client ---------------
     public const short ChunkDataID = 160;
     public const short WorldPrefsID = 161;
-
     //----------- Client to Server Messages ---------------
 
     public class RequestChunkDataMessage : MessageBase
@@ -57,5 +60,21 @@ public class MessaageTypes
         public int seed;
         public string worldName;
     }
+    public class UnloadChunkMessage : MessageBase
+    {
+        public WorldPos pos;
+    }
+
+    public class ClientInfoMessage : MessageBase
+    {
+        public ClientInfo info;
+    }
+
+    public class ChatMessage : MessageBase
+    {
+        public string username;
+        public string message;
+    }
+
 }
 

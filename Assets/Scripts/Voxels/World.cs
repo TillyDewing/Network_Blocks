@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿//William Dewing 2017
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 //Handles chunks in world space allows you to edit blocks at world points rather than at points within a chunk

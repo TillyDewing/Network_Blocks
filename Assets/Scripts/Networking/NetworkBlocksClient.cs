@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿//William Dewing 2017
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -10,6 +11,8 @@ public class NetworkBlocksClient : MonoBehaviour
     public int serverPort = 25560;
     public NetworkClient client = null;
     static NetworkBlocksClient singleton;
+
+    public string username;
 
     private void Awake()
     {
@@ -43,6 +46,7 @@ public class NetworkBlocksClient : MonoBehaviour
         //Application msgs
         client.RegisterHandler(MessaageTypes.WorldPrefsID, OnReceiveWorldPrefs);
         client.RegisterHandler(MessaageTypes.ChunkDataID, OnReceiveChunkData);
+        client.RegisterHandler(MessaageTypes.ChatMessageID, OnReceiveChatMessage);
         DontDestroyOnLoad(gameObject);
     }
 
@@ -60,6 +64,11 @@ public class NetworkBlocksClient : MonoBehaviour
     void OnClientConnect(NetworkMessage netMsg)
     {
         Debug.Log("Connected to server: " + serverIp + " on port: " + serverPort);
+
+        //Connected to server send client info
+        var response = new MessaageTypes.ClientInfoMessage();
+        response.info.username = username;
+        netMsg.conn.Send(MessaageTypes.ClientInfoID, response);
     }
     void OnClientDisconnect(NetworkMessage netMsg)
     {
@@ -103,6 +112,12 @@ public class NetworkBlocksClient : MonoBehaviour
         {
             chunk.update = true;
         }
+    }
+
+    void OnReceiveChatMessage(NetworkMessage netMsg)
+    {
+        Debug.Log("ReceviedChatMessage");
+        //Send message to chat display
     }
 
     public bool isConnected
@@ -153,3 +168,5 @@ public class NetworkBlocksClient : MonoBehaviour
         RequestChuckData(new WorldPos(0, 0, 0));
     }
 }
+
+

@@ -1,17 +1,15 @@
-﻿using System.Collections;
+﻿//William Dewing 2017
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 //Test script for modifying terrain
 public class Modify : MonoBehaviour
 {
-
-    public NetworkWorldManager worldManager;
     Vector2 rot;
 
     private void Start()
     {
-        worldManager = GameObject.FindGameObjectWithTag("World").GetComponent<NetworkWorldManager>();
     }
 
     void Update()

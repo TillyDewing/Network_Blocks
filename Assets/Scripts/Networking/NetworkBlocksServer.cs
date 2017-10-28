@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿//William Dewing 2017
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,6 +8,7 @@ using UnityEngine.Networking;
 public class NetworkBlocksServer : MonoBehaviour
 {
     public int serverPort = 25560;
+    public Dictionary<int, ClientInfo> clients = new Dictionary<int, ClientInfo>(); //List of all connected clients
 
     static NetworkBlocksServer singleton;
 
@@ -41,6 +43,9 @@ public class NetworkBlocksServer : MonoBehaviour
         //Application msgs
         NetworkServer.RegisterHandler(MessaageTypes.RequestChunkDataID, OnRequestChunkData);
         NetworkServer.RegisterHandler(MessaageTypes.SetBlockID, OnSetBlock);
+        NetworkServer.RegisterHandler(MessaageTypes.ChatMessageID, OnReceiveChatMessage);
+        NetworkServer.RegisterHandler(MessaageTypes.ClientInfoID, OnReciveClientInfo);
+        NetworkServer.RegisterHandler(MessaageTypes.UnloadChunkID, OnUnloadChunk);
 
         DontDestroyOnLoad(gameObject);
         Debug.Log("Server Started");
@@ -56,14 +61,11 @@ public class NetworkBlocksServer : MonoBehaviour
     void OnServerConnect(NetworkMessage netMsg)
     {
         Debug.Log("Client Connected");
-        var response = new MessaageTypes.WorldDataMessage();
-        response.seed = World.seed;
-        response.worldName = World.singleton.worldName;
-        netMsg.conn.Send(MessaageTypes.WorldPrefsID, response);
     }
     void OnServerDisconnect(NetworkMessage netMsg)
     {
         Debug.Log("Client Disconnected");
+        UnregisterClient(netMsg.conn.connectionId);
     }
     void OnServerError(NetworkMessage netMsg)
     {
@@ -121,14 +123,28 @@ public class NetworkBlocksServer : MonoBehaviour
 
         //netMsg.conn.Send(MessaageTypes.ChunkDataID, response);
 
-        foreach (NetworkConnection conn in NetworkServer.connections)
-        {
-            if (conn != null)
-            {
-                conn.Send(MessaageTypes.ChunkDataID, response);
-            }
-        }
+        NetworkServer.SendToAll(MessaageTypes.ChunkDataID, response);
+    }
 
+    void OnUnloadChunk(NetworkMessage netMsg)
+    {
+        Debug.Log("OnUnloadChunk");
+    }
+
+    void OnReceiveChatMessage(NetworkMessage netMsg)
+    {
+        Debug.Log("ReceviedChatMessage");
+    }
+
+    void OnReciveClientInfo(NetworkMessage netMsg)
+    {
+        var msg = netMsg.ReadMessage<MessaageTypes.ClientInfoMessage>();
+        RegisterClient(netMsg.conn.connectionId, msg.info);
+
+        var response = new MessaageTypes.WorldDataMessage();
+        response.seed = World.seed;
+        response.worldName = World.singleton.worldName;
+        netMsg.conn.Send(MessaageTypes.WorldPrefsID, response);
     }
 
     public static Chunk LoadChunk(WorldPos pos)
@@ -159,5 +175,39 @@ public class NetworkBlocksServer : MonoBehaviour
         pos.z = Mathf.Abs(pos.z - (Mathf.FloorToInt(pos.z / multiple) * Chunk.chunkSize));
         return pos;
     }
+
+    public void RegisterClient(int connectionID, ClientInfo info)
+    {
+        if (!clients.ContainsKey(connectionID))
+        {
+            clients.Add(connectionID, info);
+        }
+    }
+    public void UnregisterClient(int connectionID)
+    {
+        if (clients.ContainsKey(connectionID))
+        {
+            clients.Remove(connectionID);
+        }
+    }
+
+    public int GetConnectionID(string username)
+    {
+        foreach (KeyValuePair<int, ClientInfo> info in clients)
+        {
+            if (info.Value.username == username)
+            {
+                return info.Key;
+            }
+        }
+        return -1;
+    }
+
     
+}
+
+public struct ClientInfo
+{
+    public string username;
+    //This will store health and hunger
 }
