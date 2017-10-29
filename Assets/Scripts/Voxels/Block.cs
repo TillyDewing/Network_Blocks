@@ -10,6 +10,7 @@ public class Block
     public struct Tile { public int x; public int y;}
     const float tileSize = 0.125f;
     public bool changed = true;
+    public byte lightLevel = 12; // 0-12
     //Base block constructor
     public Block()
     {
