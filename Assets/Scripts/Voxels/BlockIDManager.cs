@@ -20,7 +20,17 @@ public static class BlockIDManager
             case 4:
                 return new BlockWood();
             case 5:
+                return new BlockWoodPlanks();
+            case 6:
                 return new BlockLeaves();
+            case 7:
+                return new BlockIron();
+            case 8:
+                return new BlockCoal();
+            case 9:
+                return new BlockSand();
+            case 10:
+                return new BlockWater();
         }
 
         return new Block();
@@ -47,11 +57,30 @@ public static class BlockIDManager
         {
             return 4;
         }
-        if (block.GetType() == typeof(BlockLeaves))
+        if (block.GetType() == typeof(BlockWoodPlanks))
         {
             return 5;
         }
-
+        if (block.GetType() == typeof(BlockLeaves))
+        {
+            return 6;
+        }
+        if (block.GetType() == typeof(BlockIron))
+        {
+            return 7;
+        }
+        if (block.GetType() == typeof(BlockCoal))
+        {
+            return 8;
+        }
+        if (block.GetType() == typeof(BlockSand))
+        {
+            return 9;
+        }
+        if (block.GetType() == typeof(BlockWater))
+        {
+            return 10;
+        }
         return 0;
     }
 }

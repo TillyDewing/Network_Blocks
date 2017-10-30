@@ -45,8 +45,7 @@ public class NetworkChunkLoader : MonoBehaviour
                              new WorldPos(-6, 0, -5), new WorldPos(-6, 0,  5), new WorldPos(-5, 0, -6), new WorldPos(-5, 0,  6), new WorldPos( 5, 0, -6),
                              new WorldPos( 5, 0,  6), new WorldPos( 6, 0, -5), new WorldPos( 6, 0,  5) };
 
-    public World world;
-    public bool loadChunks = false;
+    public bool loadChunks = true;
 
     List<WorldPos> updateList = new List<WorldPos>();
     List<WorldPos> buildList = new List<WorldPos>();
@@ -153,7 +152,7 @@ public class NetworkChunkLoader : MonoBehaviour
         {
             for (int i = 0; i < 1; i++)
             {
-                Chunk chunk = world.GetChunk(updateList[0].x, updateList[0].y, updateList[0].z);
+                Chunk chunk = World.singleton.GetChunk(updateList[0].x, updateList[0].y, updateList[0].z);
                 if (chunk != null)
                     chunk.update = true;
                 updateList.RemoveAt(0);
@@ -163,10 +162,10 @@ public class NetworkChunkLoader : MonoBehaviour
 
     void BuildChunk(WorldPos pos)
     {
-        if (world.GetChunk(pos.x, pos.y, pos.z) == null)
+        if (World.singleton.GetChunk(pos.x, pos.y, pos.z) == null)
         {
             //Need to replace this with one that comunicates with server
-            world.CreateChunk(pos.x, pos.y, pos.z);
+            World.singleton.CreateChunk(pos.x, pos.y, pos.z);
         }
     }
 
@@ -176,7 +175,7 @@ public class NetworkChunkLoader : MonoBehaviour
         if (timer == 10)
         {
             var chunksToDelete = new List<WorldPos>();
-            foreach (var chunk in world.chunks)
+            foreach (var chunk in World.singleton.chunks)
             {
                 float distance = Vector3.Distance(
                     new Vector3(chunk.Value.pos.x, 0, chunk.Value.pos.z),
@@ -187,7 +186,7 @@ public class NetworkChunkLoader : MonoBehaviour
             }
 
             foreach (var chunk in chunksToDelete)
-                world.DestroyChunk(chunk.x, chunk.y, chunk.z);
+                World.singleton.DestroyChunk(chunk.x, chunk.y, chunk.z);
 
             timer = 0;
             return true;

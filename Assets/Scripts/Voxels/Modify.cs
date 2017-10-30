@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 public class Modify : MonoBehaviour
 {
     Vector2 rot;
-
+    public byte selectedBlockID = 1;
     private void Start()
     {
     }
@@ -15,7 +15,7 @@ public class Modify : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
             if (Physics.Raycast(transform.position, transform.forward, out hit, 100))
@@ -30,6 +30,22 @@ public class Modify : MonoBehaviour
                 }
             }
         }
+        else if (Input.GetMouseButtonDown(1))
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, transform.forward, out hit, 100))
+            {
+                if (World.singleton.isClient)
+                {
+                    NetworkBlocksClient.SetBlock(hit, BlockIDManager.GetBlock(selectedBlockID), true);
+                }
+                else
+                {
+                    EditTerrain.SetBlock(hit, BlockIDManager.GetBlock(selectedBlockID), true);
+                }
+            }
+        }
+
 
         rot = new Vector2(
             rot.x + Input.GetAxis("Mouse X") * 2,

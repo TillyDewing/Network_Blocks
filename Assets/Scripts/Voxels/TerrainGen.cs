@@ -18,10 +18,18 @@ public class TerrainGen
     float dirtNoiseHeight = 3;
 
     float caveFrequency = 0.025f;
-    int caveSize = 7;
+    int caveSize = 8;
 
     float treeFrequency = 0.2f;
     int treeDensity = 3;
+
+    float coalFrequency = 0.05f;
+    int coalSize = 6;
+
+    float ironFrequency = 0.1f;
+    int ironSize = 4;
+
+    float waterHeight = -7;
 
     public Chunk ChunkGen(Chunk chunk)
     {
@@ -51,18 +59,40 @@ public class TerrainGen
         for (int y = chunk.pos.y - 8; y < chunk.pos.y + Chunk.chunkSize; y++)
         {
             int caveChance = GetNoise(x, y, z, caveFrequency, 100);
+            int coalChance = GetNoise(x, y, z, coalFrequency, 100);
+            int ironChance = GetNoise(x, y, z, ironFrequency, 100);
             if (y <= stoneHeight && caveSize < caveChance)
             {
-                SetBlock(x, y, z, new Block(), chunk);
+                if (coalSize > coalChance)
+                {
+                    SetBlock(x, y, z, new BlockCoal(), chunk);
+
+                }
+                else if (ironSize > ironChance)
+                {
+                    SetBlock(x, y, z, new BlockIron(), chunk);
+                }
+                else
+                {
+                    SetBlock(x, y, z, new Block(), chunk);
+                }
             }
             else if (y <= dirtHeight && caveSize < caveChance)
             {
                 if (y == dirtHeight)
                 {
-                    SetBlock(x, y, z, new BlockGrass(), chunk);
-                    if (GetNoise(x, 0, z, treeFrequency, 100) < treeDensity)
+                    if (y <= waterHeight + 2)
                     {
-                        CreateTree(x, y + 1, z, chunk);
+                        SetBlock(x, y, z, new BlockSand(), chunk);
+                    }
+                    else
+                    {
+                        SetBlock(x, y, z, new BlockGrass(), chunk);
+
+                        if (GetNoise(x, 0, z, treeFrequency, 100) < treeDensity)
+                        {
+                            CreateTree(x, y + 1, z, chunk);
+                        }
                     }
                 }
                 else
@@ -70,9 +100,21 @@ public class TerrainGen
                     SetBlock(x, y, z, new BlockDirt(), chunk);
                 }
             }
-            else
+            else if (caveSize >= caveChance)
             {
                 SetBlock(x, y, z, new BlockAir(), chunk);
+            }
+            else
+            {
+                if (y <= waterHeight)
+                {
+                    SetBlock(x, y, z, new BlockWater(), chunk);
+                }
+                else
+                {
+                    SetBlock(x, y, z, new BlockAir(), chunk);
+                }
+
             }
 
         }

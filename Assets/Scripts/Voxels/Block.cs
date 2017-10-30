@@ -9,6 +9,7 @@ public class Block
 
     public struct Tile { public int x; public int y;}
     const float tileSize = 0.125f;
+    const float padding = 0;
     public bool changed = true;
     //Base block constructor
     public Block()
@@ -160,10 +161,12 @@ public class Block
         Vector2[] UVs = new Vector2[4];
         Tile tilePos = TexturePosition(direction);
 
-        UVs[0] = new Vector2(tileSize * tilePos.x + tileSize, tileSize * tilePos.y);
-        UVs[1] = new Vector2(tileSize * tilePos.x + tileSize, tileSize * tilePos.y + tileSize);
-        UVs[2] = new Vector2(tileSize * tilePos.x, tileSize * tilePos.y + tileSize);
-        UVs[3] = new Vector2(tileSize * tilePos.x,tileSize * tilePos.y);
+        Vector2 uvPadding = new Vector2(padding, padding);
+
+        UVs[0] = new Vector2(tileSize * tilePos.x + tileSize, tileSize * tilePos.y) + uvPadding;
+        UVs[1] = new Vector2(tileSize * tilePos.x + tileSize, tileSize * tilePos.y + tileSize) + uvPadding;
+        UVs[2] = new Vector2(tileSize * tilePos.x, tileSize * tilePos.y + tileSize) + uvPadding;
+        UVs[3] = new Vector2(tileSize * tilePos.x,tileSize * tilePos.y) + uvPadding;
 
         return UVs;
     }

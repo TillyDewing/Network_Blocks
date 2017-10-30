@@ -2,14 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 [System.Serializable]
-public class BlockIron : Block
+public class BlockSand : Block
 {
+    public BlockSand() : base()
+    {
+    }
+
     public override Tile TexturePosition(Direction direction)
     {
         Tile tile = new Tile();
         tile.x = 1;
-        tile.y = 3;
+        tile.y = 2;
         return tile;
     }
 }

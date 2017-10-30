@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BlockWoodPlanks : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+public class BlockWoodPlanks : Block
+{
+    public override Tile TexturePosition(Direction direction)
+    {
+        Tile tile = new Tile();
+        tile.x = 3;
+        tile.y = 1;
+        return tile;
+    }
 }

@@ -11,8 +11,14 @@ public class NetworkBlocksClient : MonoBehaviour
     public int serverPort = 25560;
     public NetworkClient client = null;
     static NetworkBlocksClient singleton;
+    public GameObject playerPrefab;
+    public GameObject player;
+    public NetworkBlocksPlayer otherPlayerPrefab;
+    public float playerUpdateRate = .1f;
+    public Dictionary<string, NetworkBlocksPlayer> otherPlayers = new Dictionary<string, NetworkBlocksPlayer>();
+    public string username = "Player";
 
-    public string username;
+    float timer = 0;
 
     private void Awake()
     {
@@ -24,6 +30,21 @@ public class NetworkBlocksClient : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void Update()
+    {
+        if (client != null && client.isConnected)
+        {
+
+            timer += Time.deltaTime;
+
+            if (timer >= playerUpdateRate)
+            {
+                timer = 0;
+                UpdatePlayerData();
+            }
         }
     }
 
@@ -47,6 +68,7 @@ public class NetworkBlocksClient : MonoBehaviour
         client.RegisterHandler(MessaageTypes.WorldPrefsID, OnReceiveWorldPrefs);
         client.RegisterHandler(MessaageTypes.ChunkDataID, OnReceiveChunkData);
         client.RegisterHandler(MessaageTypes.ChatMessageID, OnReceiveChatMessage);
+        client.RegisterHandler(MessaageTypes.OtherPlayersInfoID, OnReceivePlayersInfo);
         DontDestroyOnLoad(gameObject);
     }
 
@@ -87,6 +109,7 @@ public class NetworkBlocksClient : MonoBehaviour
         World.singleton.worldName = msg.worldName;
         World.seed = msg.seed;
         World.singleton.isClient = true;
+        player = Instantiate(playerPrefab, msg.spawnPos, Quaternion.identity) as GameObject;
         NetworkChunkLoader.singleton.loadChunks = true;
     }
 
@@ -118,6 +141,32 @@ public class NetworkBlocksClient : MonoBehaviour
     {
         Debug.Log("ReceviedChatMessage");
         //Send message to chat display
+    }
+
+    void OnReceivePlayersInfo(NetworkMessage netMsg)
+    {
+        //Debug.Log("ReceviedPlayerInfo");
+
+        var msg = netMsg.ReadMessage<MessaageTypes.OtherPlayersInfoMessage>();
+
+        foreach (PlayerInfo info in msg.players)
+        {
+            Debug.Log("U: " + info.username);
+            if (info.username != username)
+            {
+                if (otherPlayers.ContainsKey(info.username))
+                {
+                    otherPlayers[info.username].UpdatePlayer(info);
+
+                }
+                else
+                {
+                    NetworkBlocksPlayer newPlayer = Instantiate(otherPlayerPrefab, info.pos, Quaternion.Euler(info.rot)) as NetworkBlocksPlayer;
+                    newPlayer.info = info;
+                    otherPlayers.Add(info.username, newPlayer);
+                }
+            }
+        }
     }
 
     public bool isConnected
@@ -163,9 +212,18 @@ public class NetworkBlocksClient : MonoBehaviour
         singleton.client.Send(MessaageTypes.SetBlockID, msg);
     }
 
-    public void TestChunkLoading()
+    public void UpdatePlayerData()
     {
-        RequestChuckData(new WorldPos(0, 0, 0));
+        if (!client.isConnected)
+            return;
+
+        var msg = new MessaageTypes.UpdatePlayerInfoMessage();
+        msg.info.username = username;
+        msg.info.pos = player.transform.position;
+        msg.info.rot = player.transform.rotation.eulerAngles;
+        client.Send(MessaageTypes.UpdatePlayerInfoID, msg);
+        //Debug.Log("SentPlayerInfo");
+
     }
 }
 

@@ -18,9 +18,11 @@ public class MessaageTypes
     public const short UnloadChunkID = 152;
     public const short ChatMessageID = 153;
     public const short ClientInfoID = 154;
+    public const short UpdatePlayerInfoID = 155;
     //----------- Server to Client ---------------
     public const short ChunkDataID = 160;
     public const short WorldPrefsID = 161;
+    public const short OtherPlayersInfoID = 162;
     //----------- Client to Server Messages ---------------
 
     public class RequestChunkDataMessage : MessageBase
@@ -59,6 +61,7 @@ public class MessaageTypes
     {
         public int seed;
         public string worldName;
+        public Vector3 spawnPos;
     }
     public class UnloadChunkMessage : MessageBase
     {
@@ -67,7 +70,7 @@ public class MessaageTypes
 
     public class ClientInfoMessage : MessageBase
     {
-        public ClientInfo info;
+        public PlayerInfo info;
     }
 
     public class ChatMessage : MessageBase
@@ -75,6 +78,24 @@ public class MessaageTypes
         public string username;
         public string message;
     }
+    public class OtherPlayersInfoMessage : MessageBase
+    {
+        public PlayerInfo[] players;
+    }
+    public class UpdatePlayerInfoMessage : MessageBase
+    {
+        public PlayerInfo info;
+    }
 
+}
+
+public struct PlayerInfo
+{
+    public string username;
+    public Vector3 pos;
+    public Vector3 rot;
+    public byte health;
+    public byte hunger;
+    //This will store health and hunger
 }
 

@@ -109,7 +109,7 @@ Camera:
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
-  m_AllowMSAA: 1
+  m_AllowMSAA: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
@@ -244,6 +244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91ef4d2dbd776ef47a4570fa68393c36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectedBlockID: 1
 --- !u!114 &114959409712856218
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -7,6 +7,7 @@ public class World : MonoBehaviour
 {
     public string worldName = "World";
     public static int seed = 0;
+    public static Vector3 spawnPos = new Vector3(0, 50, 0);
     //List of all loaded chunks
     public Dictionary<WorldPos, Chunk> chunks = new Dictionary<WorldPos, Chunk>();
 
@@ -29,7 +30,10 @@ public class World : MonoBehaviour
         }
 
         //seed = Random.Range(0, 10000);
-        LoadWorld(worldName);
+        if(!isClient)
+        {
+            LoadWorld(worldName);
+        }
     }
 
     //Creates a new chunk at given position

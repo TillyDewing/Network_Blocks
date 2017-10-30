@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BlockCoal : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+[System.Serializable]
+public class BlockCoal : Block
+{
+    public override Tile TexturePosition(Direction direction)
+    {
+        Tile tile = new Tile();
+        tile.x = 0;
+        tile.y = 3;
+        return tile;
+    }
 }
