@@ -10,7 +10,7 @@ public class NetworkBlocksClient : MonoBehaviour
     public string serverIp = "127.0.0.1";
     public int serverPort = 25560;
     public NetworkClient client = null;
-    static NetworkBlocksClient singleton;
+    public static NetworkBlocksClient singleton;
     public GameObject playerPrefab;
     public GameObject player;
     public NetworkBlocksPlayer otherPlayerPrefab;
@@ -19,7 +19,7 @@ public class NetworkBlocksClient : MonoBehaviour
     public string username = "Player";
 
     float timer = 0;
-
+    bool updateClientInfo = false;
     private void Awake()
     {
         if (singleton == null)
@@ -35,16 +35,24 @@ public class NetworkBlocksClient : MonoBehaviour
 
     private void Update()
     {
-        if (client != null && client.isConnected)
+        //if (client != null && client.isConnected)
+        //{
+
+        //    timer += Time.deltaTime;
+
+        //    if (timer >= playerUpdateRate)
+        //    {
+        //        timer = 0;
+        //        UpdatePlayerData();
+        //    }
+        //}
+    }
+
+    private void FixedUpdate()
+    {
+        if(updateClientInfo)
         {
-
-            timer += Time.deltaTime;
-
-            if (timer >= playerUpdateRate)
-            {
-                timer = 0;
-                UpdatePlayerData();
-            }
+            UpdatePlayerData();
         }
     }
 
@@ -81,6 +89,7 @@ public class NetworkBlocksClient : MonoBehaviour
 
         client.Disconnect();
         client = null;
+        updateClientInfo = false;
     }
 
     void OnClientConnect(NetworkMessage netMsg)
@@ -111,6 +120,7 @@ public class NetworkBlocksClient : MonoBehaviour
         World.singleton.isClient = true;
         player = Instantiate(playerPrefab, msg.spawnPos, Quaternion.identity) as GameObject;
         NetworkChunkLoader.singleton.loadChunks = true;
+        updateClientInfo = true;
     }
 
     void OnReceiveChunkData(NetworkMessage netMsg)
@@ -151,13 +161,13 @@ public class NetworkBlocksClient : MonoBehaviour
 
         foreach (PlayerInfo info in msg.players)
         {
-            Debug.Log("U: " + info.username);
+            //Debug.Log("U: " + info.username);
             if (info.username != username)
             {
                 if (otherPlayers.ContainsKey(info.username))
                 {
                     otherPlayers[info.username].UpdatePlayer(info);
-
+                    
                 }
                 else
                 {
@@ -175,7 +185,7 @@ public class NetworkBlocksClient : MonoBehaviour
         {
             if (client == null)
             {
-                return true;
+                return false;
             }
 
             return client.isConnected;

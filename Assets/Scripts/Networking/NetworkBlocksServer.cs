@@ -201,6 +201,7 @@ public class NetworkBlocksServer : MonoBehaviour
     {
         if (!clients.ContainsKey(connectionID))
         {
+            Debug.Log("Registered Client");
             clients.Add(connectionID, info);
         }
     }
@@ -208,6 +209,8 @@ public class NetworkBlocksServer : MonoBehaviour
     {
         if (clients.ContainsKey(connectionID))
         {
+            Debug.Log("UnRegistered Client");
+
             clients.Remove(connectionID);
         }
     }
