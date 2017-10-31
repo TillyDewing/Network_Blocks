@@ -79,6 +79,10 @@ public class World : MonoBehaviour
             {
                 Serialization.SaveChunk(chunk); //Saves chunk to file before unloading
             }
+            else
+            {
+                NetworkBlocksClient.singleton.UnloadChunk(new WorldPos(x, y, z));
+            }
             Object.Destroy(chunk.gameObject);
             chunks.Remove(new WorldPos(x, y, z));
         }

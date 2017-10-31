@@ -77,6 +77,7 @@ public class NetworkBlocksClient : MonoBehaviour
         client.RegisterHandler(MessaageTypes.ChunkDataID, OnReceiveChunkData);
         client.RegisterHandler(MessaageTypes.ChatMessageID, OnReceiveChatMessage);
         client.RegisterHandler(MessaageTypes.OtherPlayersInfoID, OnReceivePlayersInfo);
+        client.RegisterHandler(MessaageTypes.ClientDisconnectedID, OnPlayerDisconnect);
         DontDestroyOnLoad(gameObject);
     }
 
@@ -131,12 +132,12 @@ public class NetworkBlocksClient : MonoBehaviour
         Chunk chunk = EditTerrain.GetChunk(msg.chunkPos);
         if (chunk == null)
         {
-            Debug.Log("Chunk not loaded");
+            //Debug.Log("Chunk not loaded");
             return;
         }
         foreach (MessaageTypes.MsgBlock msgBlock in msg.blocks)
         {
-            Debug.Log(msg.chunkPos.x + "," + msg.chunkPos.y + "," + msg.chunkPos.z);
+            //Debug.Log(msg.chunkPos.x + "," + msg.chunkPos.y + "," + msg.chunkPos.z);
             Debug.Log(msgBlock.x + "," + msgBlock.y + "," + msgBlock.y);
             World.singleton.SetBlock(msgBlock.x + msg.chunkPos.x, msgBlock.y + msg.chunkPos.y, msgBlock.z + msg.chunkPos.z, BlockIDManager.GetBlock(msgBlock.blockID));
         }
@@ -176,6 +177,17 @@ public class NetworkBlocksClient : MonoBehaviour
                     otherPlayers.Add(info.username, newPlayer);
                 }
             }
+        }
+    }
+
+    private void OnPlayerDisconnect(NetworkMessage netMsg)
+    {
+        var msg = netMsg.ReadMessage<MessaageTypes.ClientDisconectedMessage>();
+
+        if (otherPlayers.ContainsKey(msg.username))
+        {
+            Destroy(otherPlayers[msg.username].gameObject);
+            otherPlayers.Remove(username);
         }
     }
 
@@ -234,6 +246,13 @@ public class NetworkBlocksClient : MonoBehaviour
         client.Send(MessaageTypes.UpdatePlayerInfoID, msg);
         //Debug.Log("SentPlayerInfo");
 
+    }
+
+    public void UnloadChunk(WorldPos pos)
+    {
+        var msg = new MessaageTypes.UnloadChunkMessage();
+        msg.pos = pos;
+        client.Send(MessaageTypes.UnloadChunkID, msg);
     }
 }
 

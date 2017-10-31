@@ -50,7 +50,7 @@ public class NetworkBlocksServer : MonoBehaviour
         NetworkServer.RegisterHandler(MessaageTypes.RequestChunkDataID, OnRequestChunkData);
         NetworkServer.RegisterHandler(MessaageTypes.SetBlockID, OnSetBlock);
         NetworkServer.RegisterHandler(MessaageTypes.ChatMessageID, OnReceiveChatMessage);
-        NetworkServer.RegisterHandler(MessaageTypes.ClientInfoID, OnReciveClientInfo);
+        NetworkServer.RegisterHandler(MessaageTypes.ClientInfoID, OnRecivePlayerInfo);
         NetworkServer.RegisterHandler(MessaageTypes.UnloadChunkID, OnUnloadChunk);
         NetworkServer.RegisterHandler(MessaageTypes.UpdatePlayerInfoID, OnUpdatePlayerInfo);
 
@@ -111,6 +111,7 @@ public class NetworkBlocksServer : MonoBehaviour
             response.blocks = msgBlocks.ToArray();
             response.chunkPos = msg.pos;
             netMsg.conn.Send(MessaageTypes.ChunkDataID, response);
+            chunk.numClientsLoaded++;
         }
         
     }
@@ -138,7 +139,20 @@ public class NetworkBlocksServer : MonoBehaviour
 
     void OnUnloadChunk(NetworkMessage netMsg)
     {
-        Debug.Log("OnUnloadChunk");
+        var msg = netMsg.ReadMessage<MessaageTypes.UnloadChunkMessage>();
+        WorldPos pos = msg.pos;
+        Chunk chunk = World.singleton.GetChunk(pos.x, pos.y, pos.z);
+
+        if (chunk != null)
+        {
+            chunk.numClientsLoaded--;
+
+            if (chunk.numClientsLoaded <= 0)
+            {
+                Debug.Log("Chunk no longer needed saving and deleting");
+                World.singleton.DestroyChunk(pos.x, pos.y, pos.z);
+            }
+        }
     }
 
     void OnReceiveChatMessage(NetworkMessage netMsg)
@@ -146,10 +160,15 @@ public class NetworkBlocksServer : MonoBehaviour
         Debug.Log("ReceviedChatMessage");
     }
 
-    void OnReciveClientInfo(NetworkMessage netMsg)
+    void OnRecivePlayerInfo(NetworkMessage netMsg)
     {
         var msg = netMsg.ReadMessage<MessaageTypes.ClientInfoMessage>();
-        RegisterClient(netMsg.conn.connectionId, msg.info);
+        if(!RegisterClient(netMsg.conn.connectionId, msg.info))
+        {
+            //If Clients username is the same as anouther disconnect client.
+            netMsg.conn.Disconnect();
+            return;
+        }
 
         var response = new MessaageTypes.WorldDataMessage();
         response.seed = World.seed;
@@ -184,7 +203,7 @@ public class NetworkBlocksServer : MonoBehaviour
         {
             chunk = World.singleton.GetChunk(pos.x, pos.y, pos.z);
         }
-
+        
         return chunk;
     }
 
@@ -197,13 +216,15 @@ public class NetworkBlocksServer : MonoBehaviour
         return pos;
     }
 
-    public void RegisterClient(int connectionID, PlayerInfo info)
+    public bool RegisterClient(int connectionID, PlayerInfo info)
     {
         if (!clients.ContainsKey(connectionID))
         {
             Debug.Log("Registered Client");
             clients.Add(connectionID, info);
+            return true;
         }
+        return false;
     }
     public void UnregisterClient(int connectionID)
     {
