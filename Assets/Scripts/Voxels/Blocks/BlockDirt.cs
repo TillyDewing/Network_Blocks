@@ -17,4 +17,13 @@ public class BlockDirt : Block
         tile.y = 0;
         return tile;
     }
+
+    public override byte GetBlockHealth()
+    {
+        return 5;
+    }
+    public override ToolType GetToolType()
+    {
+        return ToolType.shovel;
+    }
 }

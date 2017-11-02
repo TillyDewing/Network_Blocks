@@ -6,7 +6,7 @@ using System;
 public class Block
 {
     public enum Direction { north, east, south, west, up, down };
-
+    public enum ToolType { pickAxe,shovel,axe,hoe,weapon,hands};
     public struct Tile { public int x; public int y;}
     const float tileSize = 0.125f;
     const float padding = 0;
@@ -192,4 +192,12 @@ public class Block
         return false;
     }
 
+    public virtual ToolType GetToolType()
+    {
+        return ToolType.hands;
+    }
+    public virtual byte GetBlockHealth()
+    {
+        return 5;
+    }
 }

@@ -12,4 +12,13 @@ public class BlockIron : Block
         tile.y = 3;
         return tile;
     }
+
+    public override byte GetBlockHealth()
+    {
+        return 13;
+    }
+    public override ToolType GetToolType()
+    {
+        return ToolType.pickAxe;
+    }
 }
