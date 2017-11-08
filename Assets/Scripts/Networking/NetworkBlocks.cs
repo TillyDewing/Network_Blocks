@@ -23,6 +23,7 @@ public class MessaageTypes
     public const short ChunkDataID = 160;
     public const short WorldPrefsID = 161;
     public const short OtherPlayersInfoID = 162;
+    public const short ClientDisconnectedID = 163;
     //----------- Client to Server Messages ---------------
 
     public class RequestChunkDataMessage : MessageBase
@@ -34,6 +35,25 @@ public class MessaageTypes
     {
         public WorldPos pos;
         public byte blockID;
+    }
+    public class UnloadChunkMessage : MessageBase
+    {
+        public WorldPos pos;
+    }
+
+    public class ClientInfoMessage : MessageBase
+    {
+        public PlayerInfo info;
+    }
+
+    public class ChatMessage : MessageBase
+    {
+        public string username;
+        public string message;
+    }
+    public class UpdatePlayerInfoMessage : MessageBase
+    {
+        public PlayerInfo info;
     }
 
     //----------- Server to Client Messages ---------------
@@ -63,29 +83,17 @@ public class MessaageTypes
         public string worldName;
         public Vector3 spawnPos;
     }
-    public class UnloadChunkMessage : MessageBase
-    {
-        public WorldPos pos;
-    }
-
-    public class ClientInfoMessage : MessageBase
-    {
-        public PlayerInfo info;
-    }
-
-    public class ChatMessage : MessageBase
-    {
-        public string username;
-        public string message;
-    }
+    
     public class OtherPlayersInfoMessage : MessageBase
     {
         public PlayerInfo[] players;
     }
-    public class UpdatePlayerInfoMessage : MessageBase
+
+    public class ClientDisconectedMessage : MessageBase
     {
-        public PlayerInfo info;
+        public string username;
     }
+
 
 }
 

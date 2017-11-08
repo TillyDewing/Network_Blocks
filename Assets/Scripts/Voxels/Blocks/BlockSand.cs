@@ -17,4 +17,13 @@ public class BlockSand : Block
         tile.y = 2;
         return tile;
     }
+
+    public override byte GetBlockHealth()
+    {
+        return 5;
+    }
+    public override ToolType GetToolType()
+    {
+        return ToolType.shovel;
+    }
 }

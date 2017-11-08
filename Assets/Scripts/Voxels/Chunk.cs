@@ -16,7 +16,7 @@ public class Chunk : MonoBehaviour
     public bool rendered;
     public World world;
     public WorldPos pos;
-
+    public byte numClientsLoaded = 0;
     MeshFilter filter;
     MeshCollider coll;
 

@@ -8,6 +8,10 @@ public class Modify : MonoBehaviour
 {
     Vector2 rot;
     public byte selectedBlockID = 1;
+    public byte minBlock = 1;
+    public byte maxBlock = 9;
+
+    public bool useCameraControls = true;
     private void Start()
     {
     }
@@ -46,6 +50,20 @@ public class Modify : MonoBehaviour
             }
         }
 
+        if (Input.GetAxis("Mouse ScrollWheel") >= .1)
+        {
+            selectedBlockID++;
+        }
+        else if(Input.GetAxis("Mouse ScrollWheel") <= -.1)
+        {
+            selectedBlockID--;
+        }
+        selectedBlockID = (byte)Mathf.Clamp(selectedBlockID, minBlock, maxBlock);
+
+        if(!useCameraControls)
+        {
+            return;
+        }
 
         rot = new Vector2(
             rot.x + Input.GetAxis("Mouse X") * 2,

@@ -28,4 +28,13 @@ public class BlockWood : Block
         tile.y = 1;
         return tile;
     }
+
+    public override byte GetBlockHealth()
+    {
+        return 6;
+    }
+    public override ToolType GetToolType()
+    {
+        return ToolType.axe;
+    }
 }

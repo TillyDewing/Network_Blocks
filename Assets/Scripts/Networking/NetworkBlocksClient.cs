@@ -10,7 +10,7 @@ public class NetworkBlocksClient : MonoBehaviour
     public string serverIp = "127.0.0.1";
     public int serverPort = 25560;
     public NetworkClient client = null;
-    static NetworkBlocksClient singleton;
+    public static NetworkBlocksClient singleton;
     public GameObject playerPrefab;
     public GameObject player;
     public NetworkBlocksPlayer otherPlayerPrefab;
@@ -19,7 +19,7 @@ public class NetworkBlocksClient : MonoBehaviour
     public string username = "Player";
 
     float timer = 0;
-
+    bool updateClientInfo = false;
     private void Awake()
     {
         if (singleton == null)
@@ -35,16 +35,24 @@ public class NetworkBlocksClient : MonoBehaviour
 
     private void Update()
     {
-        if (client != null && client.isConnected)
+        //if (client != null && client.isConnected)
+        //{
+
+        //    timer += Time.deltaTime;
+
+        //    if (timer >= playerUpdateRate)
+        //    {
+        //        timer = 0;
+        //        UpdatePlayerData();
+        //    }
+        //}
+    }
+
+    private void FixedUpdate()
+    {
+        if(updateClientInfo)
         {
-
-            timer += Time.deltaTime;
-
-            if (timer >= playerUpdateRate)
-            {
-                timer = 0;
-                UpdatePlayerData();
-            }
+            UpdatePlayerData();
         }
     }
 
@@ -69,6 +77,7 @@ public class NetworkBlocksClient : MonoBehaviour
         client.RegisterHandler(MessaageTypes.ChunkDataID, OnReceiveChunkData);
         client.RegisterHandler(MessaageTypes.ChatMessageID, OnReceiveChatMessage);
         client.RegisterHandler(MessaageTypes.OtherPlayersInfoID, OnReceivePlayersInfo);
+        client.RegisterHandler(MessaageTypes.ClientDisconnectedID, OnPlayerDisconnect);
         DontDestroyOnLoad(gameObject);
     }
 
@@ -81,6 +90,7 @@ public class NetworkBlocksClient : MonoBehaviour
 
         client.Disconnect();
         client = null;
+        updateClientInfo = false;
     }
 
     void OnClientConnect(NetworkMessage netMsg)
@@ -111,6 +121,7 @@ public class NetworkBlocksClient : MonoBehaviour
         World.singleton.isClient = true;
         player = Instantiate(playerPrefab, msg.spawnPos, Quaternion.identity) as GameObject;
         NetworkChunkLoader.singleton.loadChunks = true;
+        updateClientInfo = true;
     }
 
     void OnReceiveChunkData(NetworkMessage netMsg)
@@ -121,12 +132,12 @@ public class NetworkBlocksClient : MonoBehaviour
         Chunk chunk = EditTerrain.GetChunk(msg.chunkPos);
         if (chunk == null)
         {
-            Debug.Log("Chunk not loaded");
+            //Debug.Log("Chunk not loaded");
             return;
         }
         foreach (MessaageTypes.MsgBlock msgBlock in msg.blocks)
         {
-            Debug.Log(msg.chunkPos.x + "," + msg.chunkPos.y + "," + msg.chunkPos.z);
+            //Debug.Log(msg.chunkPos.x + "," + msg.chunkPos.y + "," + msg.chunkPos.z);
             Debug.Log(msgBlock.x + "," + msgBlock.y + "," + msgBlock.y);
             World.singleton.SetBlock(msgBlock.x + msg.chunkPos.x, msgBlock.y + msg.chunkPos.y, msgBlock.z + msg.chunkPos.z, BlockIDManager.GetBlock(msgBlock.blockID));
         }
@@ -151,13 +162,13 @@ public class NetworkBlocksClient : MonoBehaviour
 
         foreach (PlayerInfo info in msg.players)
         {
-            Debug.Log("U: " + info.username);
+            //Debug.Log("U: " + info.username);
             if (info.username != username)
             {
                 if (otherPlayers.ContainsKey(info.username))
                 {
                     otherPlayers[info.username].UpdatePlayer(info);
-
+                    
                 }
                 else
                 {
@@ -169,13 +180,24 @@ public class NetworkBlocksClient : MonoBehaviour
         }
     }
 
+    private void OnPlayerDisconnect(NetworkMessage netMsg)
+    {
+        var msg = netMsg.ReadMessage<MessaageTypes.ClientDisconectedMessage>();
+
+        if (otherPlayers.ContainsKey(msg.username))
+        {
+            Destroy(otherPlayers[msg.username].gameObject);
+            otherPlayers.Remove(username);
+        }
+    }
+
     public bool isConnected
     {
         get
         {
             if (client == null)
             {
-                return true;
+                return false;
             }
 
             return client.isConnected;
@@ -224,6 +246,13 @@ public class NetworkBlocksClient : MonoBehaviour
         client.Send(MessaageTypes.UpdatePlayerInfoID, msg);
         //Debug.Log("SentPlayerInfo");
 
+    }
+
+    public void UnloadChunk(WorldPos pos)
+    {
+        var msg = new MessaageTypes.UnloadChunkMessage();
+        msg.pos = pos;
+        client.Send(MessaageTypes.UnloadChunkID, msg);
     }
 }
 

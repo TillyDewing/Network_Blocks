@@ -10,11 +10,6 @@ public class NetworkBlocksPlayer : MonoBehaviour
     public Text usernameBox;
     public Transform head;
 
-    private void Update()
-    {
-
-    }
-
     public void UpdatePlayer(PlayerInfo info)
     {
         this.info = info;

@@ -11,4 +11,13 @@ public class BlockWoodPlanks : Block
         tile.y = 1;
         return tile;
     }
+
+    public override byte GetBlockHealth()
+    {
+        return 8;
+    }
+    public override ToolType GetToolType()
+    {
+        return ToolType.axe;
+    }
 }

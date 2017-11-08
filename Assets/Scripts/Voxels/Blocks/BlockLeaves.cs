@@ -23,4 +23,13 @@ public class BlockLeaves : Block
     {
         return false;
     }
+
+    public override byte GetBlockHealth()
+    {
+        return 2;
+    }
+    public override ToolType GetToolType()
+    {
+        return ToolType.hands;
+    }
 }
