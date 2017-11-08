@@ -1,0 +1,35 @@
+[
+  {
+    "id": 1,
+    "title": "Stone",
+    "value": 100,
+    "description": "I got a Rock",
+    "stackable": false,
+    "itemType": 0,
+    "defence": 0,
+    "power": 10,
+    "iconId": 0
+  },
+  {
+    "id": 0,
+    "title": "Health Potion",
+    "value": 30,
+    "description": "A magical brew capable of healing your wounds.",
+    "stackable": true,
+    "itemType": 2,
+    "defence": 0,
+    "power": 50,
+    "iconId": 1
+  },
+  {
+    "id": 2,
+    "title": "Mana Potion",
+    "value": 30,
+    "description": "A magical brew capable of restoring your manna. Just don't ask how.",
+    "stackable": true,
+    "itemType" : 3,
+    "defence": 0,
+    "power": 50,
+    "iconId": 1
+  }
+]
