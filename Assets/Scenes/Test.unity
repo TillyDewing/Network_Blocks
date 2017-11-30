@@ -152,9 +152,28 @@ Prefab:
       propertyPath: loadChunks
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 114473410843809418, guid: d73322c6fb4046d4a9f1c8dd7b1df939, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: d73322c6fb4046d4a9f1c8dd7b1df939, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &687407070 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1133227274287660, guid: d73322c6fb4046d4a9f1c8dd7b1df939,
+    type: 2}
+  m_PrefabInternal: {fileID: 687407069}
+--- !u!114 &687407071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 687407070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d72d0e833664dd54290eea40b3f68573, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  world: {fileID: 749683458}
+  loadChunks: 1
 --- !u!1 &749683457
 GameObject:
   m_ObjectHideFlags: 0

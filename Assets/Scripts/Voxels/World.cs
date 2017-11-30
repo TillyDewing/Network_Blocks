@@ -149,7 +149,11 @@ public class World : MonoBehaviour
     public void SaveAndQuit()
     {
         Debug.Log("Saving Chunks...");
-        player.loadChunks = false;
+        if(!isClient)
+        {
+            player.loadChunks = false;
+
+        }
         foreach (KeyValuePair<WorldPos,Chunk> entry in chunks)
         {
             DestroyChunk(entry.Value.pos.x, entry.Value.pos.y, entry.Value.pos.z);
