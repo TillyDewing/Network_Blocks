@@ -9,11 +9,14 @@ EditorBuildSettings:
     path: 
     guid: 5bf4023734f931c4490b0ee5199ef184
   - enabled: 0
-    path: Assets/TESTFDSFSF.unity
+    path: 
     guid: 7b343a289f5a6614f87525507778ad57
   - enabled: 0
-    path: Assets/Server Test.unity
+    path: Assets/Scenes/Server Test.unity
     guid: fef9e1be1c7f6b14d8fdc63988cad4e6
   - enabled: 1
-    path: Assets/Client Test.unity
+    path: Assets/Scenes/Client Test.unity
     guid: c54c0642c0b428349bc015934c1ab0bb
+  - enabled: 1
+    path: Assets/Scenes/Test.unity
+    guid: d04a89c4d2786b7408374efb24a1b9c7

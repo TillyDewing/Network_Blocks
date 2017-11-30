@@ -69,11 +69,12 @@ public class NetworkBlocksServer : MonoBehaviour
     //System Handlers
     void OnServerConnect(NetworkMessage netMsg)
     {
-        Debug.Log("Client Connected");
+        Debug.Log("Client Joining Ip: " + netMsg.conn.address);
     }
     void OnServerDisconnect(NetworkMessage netMsg)
     {
-        Debug.Log("Client Disconnected");
+        
+        Debug.Log("Client: " + clients[netMsg.conn.connectionId].username +  " Disconnected");
         UnregisterClient(netMsg.conn.connectionId);
     }
     void OnServerError(NetworkMessage netMsg)
@@ -119,7 +120,7 @@ public class NetworkBlocksServer : MonoBehaviour
     {
 
         var msg = netMsg.ReadMessage<MessaageTypes.SetBlockMessage>();
-        Debug.Log("Client Set block");
+        //Debug.Log("Client Set block");
 
         //Update block on server
         Chunk chunk = LoadChunk(msg.pos);
@@ -220,7 +221,7 @@ public class NetworkBlocksServer : MonoBehaviour
     {
         if (!clients.ContainsKey(connectionID))
         {
-            Debug.Log("Registered Client");
+            Debug.Log(info.username  + "joined the server.");
             clients.Add(connectionID, info);
             return true;
         }

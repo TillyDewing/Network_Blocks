@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
+using UnityEngine.UI;
 //Test script for modifying terrain
 public class Modify : MonoBehaviour
 {
@@ -12,13 +12,19 @@ public class Modify : MonoBehaviour
     public byte maxBlock = 9;
 
     public bool useCameraControls = true;
+    public bool allowModify = true;
+
+    public Text blockNameDis;
     private void Start()
     {
     }
 
     void Update()
     {
-
+        if (!allowModify)
+        {
+            return;
+        }
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
@@ -53,10 +59,18 @@ public class Modify : MonoBehaviour
         if (Input.GetAxis("Mouse ScrollWheel") >= .1)
         {
             selectedBlockID++;
+            if (blockNameDis != null)
+            {
+                blockNameDis.text = BlockIDManager.GetBlock(selectedBlockID).ToString();
+            }
         }
         else if(Input.GetAxis("Mouse ScrollWheel") <= -.1)
         {
             selectedBlockID--;
+            if (blockNameDis != null)
+            {
+                blockNameDis.text = BlockIDManager.GetBlock(selectedBlockID).ToString();
+            }
         }
         selectedBlockID = (byte)Mathf.Clamp(selectedBlockID, minBlock, maxBlock);
 
@@ -74,6 +88,15 @@ public class Modify : MonoBehaviour
 
         transform.position += transform.forward * 2 * Input.GetAxis("Vertical");
         transform.position += transform.right * 2 * Input.GetAxis("Horizontal");
+
+        if (blockNameDis == null)
+        {
+            GameObject dis = GameObject.FindGameObjectWithTag("BlockDis");
+            if (dis != null)
+            {
+                blockNameDis = dis.GetComponent<Text>();
+            }
+        }
     }
 
 
