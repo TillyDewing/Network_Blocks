@@ -135,8 +135,8 @@ public class ItemTypes
 {
     public static int weapon = 0;
     public static int armour = 1;
-    public static int food = 2;
-    public static int block = 3;
+    public static int food = 3;
+    public static int block = 2;
     public static int tool = 4;
 
 

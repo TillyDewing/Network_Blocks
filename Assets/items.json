@@ -3,18 +3,18 @@
     "id": 1,
     "title": "Stone",
     "value": 100,
-    "description": "I got a Rock",
+    "description": "I got a Rock!",
     "stackable": false,
-    "itemType": 0,
+    "itemType": 2
     "defence": 0,
     "power": 10,
     "iconId": 0
   },
   {
-    "id": 0,
-    "title": "Health Potion",
+    "id": 2,
+    "title": "Grass",
     "value": 30,
-    "description": "A magical brew capable of healing your wounds.",
+    "description": "You Sod.",
     "stackable": true,
     "itemType": 2,
     "defence": 0,
@@ -22,14 +22,69 @@
     "iconId": 1
   },
   {
-    "id": 2,
-    "title": "Mana Potion",
+    "id": 3,
+    "title": "Dirt",
     "value": 30,
-    "description": "A magical brew capable of restoring your manna. Just don't ask how.",
+    "description": "I've got a block of dirt!",
     "stackable": true,
-    "itemType" : 3,
+    "itemType" : 2,
+    "defence": 0,
+    "power": 50,
+    "iconId": 2
+  },
+  {
+    "id": 4,
+    "title": "Wood",
+    "value": 30,
+    "description": "This has been logged.",
+    "stackable": true,
+    "itemType": 2,
     "defence": 0,
     "power": 50,
     "iconId": 1
-  }
+  },
+  {
+    "id": 5,
+    "title": "Wood Planks",
+    "value": 30,
+    "description": "Some lumber",
+    "stackable": true,
+    "itemType": 2,
+    "defence": 0,
+    "power": 50,
+    "iconId": 1
+  },
+  {
+    "id": 7,
+    "title": "Iron Ore",
+    "value": 30,
+    "description": "Iron ore",
+    "stackable": true,
+    "itemType": 2,
+    "defence": 0,
+    "power": 50,
+    "iconId": 1
+  },
+  {
+    "id": 8,
+    "title": "Coal",
+    "value": 30,
+    "description": "Wish it were diamond",
+    "stackable": true,
+    "itemType": 2,
+    "defence": 0,
+    "power": 50,
+    "iconId": 1
+  },
+  {
+    "id": 9,
+    "title": "Sand",
+    "value": 30,
+    "description": "Some sand.",
+    "stackable": true,
+    "itemType": 2,
+    "defence": 0,
+    "power": 50,
+    "iconId": 1
+  },
 ]
